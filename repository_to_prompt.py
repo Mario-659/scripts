@@ -10,22 +10,24 @@ def get_repo_content(repo_path, max_chars=10000):
     content = ""
 
     for root, dirs, files in os.walk(repo_path):
-        excluded_dirs = ['node_modules', '.git', 'build', 'dist']
-        included_file_extensions = ('.kt', '.js', '.ts', '.html')
+        excluded_dirs = ['node_modules', '.git', 'build', 'dist', "test", "test_performance", "out", "cmake-build-debug-visual-studio", "venv", "vite", "cmake-build-release-mingw", "cmake-build-release-visual-studio"]
+        included_file_extensions = ('.kt', '.js', '.ts', '.html', ".h", ".cpp", ".tex", ".bib", ".set",)
 
         dirs[:] = [d for d in dirs if d not in excluded_dirs]
         
         for file in files:
-            if file.endswith(included_file_extensions):
+            if file.endswith(included_file_extensions) and not file.endswith('.spec.ts'):
                 file_path = os.path.join(root, file)
                 print(f"reading: {file_path}")
-                with open(file_path, "r") as f:
+                with open(file_path, "r", encoding="utf8") as f:
                     file_content = f.read()
 
                     # Remove import lines and empty lines
                     file_content = re.sub(r"import.*\n|\n\s*\n", "", file_content)
                     
+                    content += "---------------------\n"
                     content += os.path.relpath(file_path, repo_path)
+                    content += "\n\n"
                     content += file_content
                     
     return  content
