@@ -10,8 +10,8 @@ def get_repo_content(repo_path, max_chars=10000):
     content = ""
 
     for root, dirs, files in os.walk(repo_path):
-        excluded_dirs = ['node_modules', '.git', 'build', 'dist', "test", "test_performance", "out", "cmake-build-debug-visual-studio", "venv", "vite", "cmake-build-release-mingw", "cmake-build-release-visual-studio"]
-        included_file_extensions = ('.kt', '.js', '.ts', '.html', ".h", ".cpp", ".tex", ".bib", ".set",)
+        excluded_dirs = ['.vs', 'img', 'node_modules', '.git', 'build', 'dist', "test", "test_performance", "out", "cmake-build-debug-visual-studio", "venv", "vite", "cmake-build-release-mingw", "cmake-build-release-visual-studio"]
+        included_file_extensions = ('.kt', '.js', '.ts', '.html', ".h", ".cpp", ".tex", ".bib", ".set", ".txt")
 
         dirs[:] = [d for d in dirs if d not in excluded_dirs]
         
@@ -19,7 +19,10 @@ def get_repo_content(repo_path, max_chars=10000):
             if file.endswith(included_file_extensions) and not file.endswith('.spec.ts'):
                 file_path = os.path.join(root, file)
                 print(f"reading: {file_path}")
-                with open(file_path, "r", encoding="utf8") as f:
+                # content += os.path.relpath(file_path, repo_path)
+                # content += "\n"
+
+                with open(file_path, "r", encoding='utf8') as f:
                     file_content = f.read()
 
                     # Remove import lines and empty lines
@@ -71,7 +74,7 @@ def main():
 
     prompt = create_prompt(repo_path)
 
-    with open("generated_prompt.txt", "a") as f:
+    with open("generated_prompt.txt", "a", encoding="utf-8") as f:
         f.write(prompt)
 
 
